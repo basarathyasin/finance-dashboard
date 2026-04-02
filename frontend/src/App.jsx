@@ -6,6 +6,7 @@ import AuthLayout from "./layouts/AuthLayout";
 import LoginPage from "./modules/auth/pages/LoginPage";
 import RegisterPage from "./modules/auth/pages/RegisterPage";
 import DashboardPage from "./modules/dashboard/pages/DashboardPage";
+import RecordsPage from "./modules/records/pages/RecordsPage";
 
 function App() {
   return (
@@ -36,6 +37,16 @@ function App() {
           <ProtectedRoute>
             <AppLayout>
               <DashboardPage />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/records"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <RecordsPage />
             </AppLayout>
           </ProtectedRoute>
         }

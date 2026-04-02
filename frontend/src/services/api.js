@@ -1,5 +1,5 @@
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8003/api";
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:8008/api";
 
 async function request(method, url, body) {
   const token = localStorage.getItem("finance_dashboard_token");

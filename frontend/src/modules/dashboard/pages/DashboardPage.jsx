@@ -1,28 +1,47 @@
+import { useEffect } from "react";
 import { useAuth } from "../../auth/hooks/useAuth";
+import CategoryBreakdown from "../components/CategoryBreakdown";
+import SummaryCards from "../components/SummaryCards";
+import TrendList from "../components/TrendList";
+import { useDashboard } from "../hooks/useDashboard";
 
 function DashboardPage() {
   const { user } = useAuth();
+  const { summary, categories, trends, isLoading, error, loadDashboard } =
+    useDashboard();
+
+  useEffect(() => {
+    loadDashboard();
+  }, [loadDashboard]);
 
   return (
-    <section className="dashboard-grid">
+    <section className="dashboard-page">
       <article className="stat-card stat-card-wide">
-        <p className="section-kicker">Authentication</p>
-        <h2>Frontend auth flow is connected to the backend.</h2>
+        <p className="section-kicker">Dashboard analytics</p>
+        <h2>Live finance analytics for {user?.name}</h2>
         <p>
-          The JWT is stored in local storage, restored on refresh, and all protected
-          routes redirect unauthenticated users back to login.
+          This dashboard reads income, expense, category, and trend data directly
+          from the backend analytics endpoints through the shared fetch service.
         </p>
       </article>
 
-      <article className="stat-card">
-        <span className="stat-label">Name</span>
-        <strong>{user?.name}</strong>
-      </article>
+      {isLoading ? <div className="empty-state-card">Loading dashboard...</div> : null}
+      {!isLoading && error ? (
+        <div className="empty-state-card">
+          <h3>Could not load dashboard</h3>
+          <p>{error}</p>
+        </div>
+      ) : null}
 
-      <article className="stat-card">
-        <span className="stat-label">Role</span>
-        <strong>{user?.role}</strong>
-      </article>
+      {!isLoading && !error ? (
+        <>
+          <SummaryCards summary={summary} />
+          <div className="dashboard-grid">
+            <CategoryBreakdown categories={categories} />
+            <TrendList trends={trends} />
+          </div>
+        </>
+      ) : null}
     </section>
   );
 }

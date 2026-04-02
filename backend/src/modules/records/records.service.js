@@ -45,6 +45,17 @@ function buildFilters(query, userId) {
   return filters;
 }
 
+function getPagination(query) {
+  const page = Number(query.page || 1);
+  const limit = Number(query.limit || 10);
+
+  return {
+    page,
+    limit,
+    skip: (page - 1) * limit,
+  };
+}
+
 async function createRecord(recordData, userId) {
   const record = await Record.create({
     amount: recordData.amount,
@@ -63,10 +74,24 @@ async function createRecord(recordData, userId) {
 
 async function getRecords(query, userId) {
   const filters = buildFilters(query, userId);
-  const records = await Record.find(filters).sort({ date: -1, createdAt: -1 });
+  const { page, limit, skip } = getPagination(query);
+
+  const [records, totalRecords] = await Promise.all([
+    Record.find(filters)
+      .sort({ date: -1, createdAt: -1 })
+      .skip(skip)
+      .limit(limit),
+    Record.countDocuments(filters),
+  ]);
 
   return {
     records: records.map(buildRecordResponse),
+    pagination: {
+      page,
+      limit,
+      totalRecords,
+      totalPages: Math.ceil(totalRecords / limit) || 1,
+    },
   };
 }
 

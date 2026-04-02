@@ -17,6 +17,24 @@ function validateCreateRecordBody(body) {
   validateDate(body.date, "date");
 }
 
+function validatePaginationQuery(query) {
+  if (query.page !== undefined) {
+    const page = Number(query.page);
+
+    if (!Number.isInteger(page) || page < 1) {
+      throw createError("page must be a positive integer", 400);
+    }
+  }
+
+  if (query.limit !== undefined) {
+    const limit = Number(query.limit);
+
+    if (!Number.isInteger(limit) || limit < 1) {
+      throw createError("limit must be a positive integer", 400);
+    }
+  }
+}
+
 function validateUpdateRecordBody(body) {
   if (
     body.amount === undefined &&
@@ -47,6 +65,7 @@ module.exports = {
   getRecords: asyncHandler(async function getRecords(req, res) {
     validateEnum(req.query.type, ["income", "expense"], "type");
     validateDate(req.query.date, "date");
+    validatePaginationQuery(req.query);
     const data = await recordsService.getRecords(req.query, req.user._id);
     sendResponse(res, 200, "Records fetched successfully", data);
   }),

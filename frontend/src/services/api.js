@@ -1,6 +1,10 @@
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8008/api";
 
+function handleUnauthorized() {
+  window.dispatchEvent(new CustomEvent("auth:unauthorized"));
+}
+
 async function request(method, url, body) {
   const token = localStorage.getItem("finance_dashboard_token");
 
@@ -24,6 +28,10 @@ async function request(method, url, body) {
     : null;
 
   if (!response.ok) {
+    if (response.status === 401) {
+      handleUnauthorized();
+    }
+
     const error = new Error(data?.message || "Something went wrong");
     error.status = response.status;
     error.data = data;

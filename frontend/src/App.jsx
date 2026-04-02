@@ -1,4 +1,3 @@
-import AdminRoute from "./components/AdminRoute";
 import { Navigate, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
@@ -13,6 +12,7 @@ import UsersPage from "./modules/users/pages/UsersPage";
 function App() {
   return (
     <Routes>
+      <Route path="/" element={<Navigate replace to="/dashboard" />} />
       <Route
         path="/login"
         element={
@@ -34,7 +34,7 @@ function App() {
         }
       />
       <Route
-        path="/"
+        path="/dashboard"
         element={
           <ProtectedRoute>
             <AppLayout>
@@ -56,14 +56,14 @@ function App() {
       <Route
         path="/users"
         element={
-          <AdminRoute>
+          <ProtectedRoute allowedRoles={["admin"]}>
             <AppLayout>
               <UsersPage />
             </AppLayout>
-          </AdminRoute>
+          </ProtectedRoute>
         }
       />
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   );
 }

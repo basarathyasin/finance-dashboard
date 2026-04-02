@@ -27,6 +27,16 @@ function AppLayout({ children }) {
             >
               Records
             </NavLink>
+            {user?.role === "admin" ? (
+              <NavLink
+                className={({ isActive }) =>
+                  isActive ? "nav-link nav-link-active" : "nav-link"
+                }
+                to="/users"
+              >
+                Users
+              </NavLink>
+            ) : null}
           </nav>
         </div>
         <div className="topbar-actions">

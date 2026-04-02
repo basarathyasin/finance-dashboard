@@ -1,3 +1,4 @@
+import AdminRoute from "./components/AdminRoute";
 import { Navigate, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
@@ -7,6 +8,7 @@ import LoginPage from "./modules/auth/pages/LoginPage";
 import RegisterPage from "./modules/auth/pages/RegisterPage";
 import DashboardPage from "./modules/dashboard/pages/DashboardPage";
 import RecordsPage from "./modules/records/pages/RecordsPage";
+import UsersPage from "./modules/users/pages/UsersPage";
 
 function App() {
   return (
@@ -49,6 +51,16 @@ function App() {
               <RecordsPage />
             </AppLayout>
           </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/users"
+        element={
+          <AdminRoute>
+            <AppLayout>
+              <UsersPage />
+            </AppLayout>
+          </AdminRoute>
         }
       />
       <Route path="*" element={<Navigate to="/" replace />} />

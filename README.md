@@ -1,10 +1,15 @@
-# Finance Dashboard Backend
+# Finance Dashboard System
 
-This project uses a feature-based modular backend architecture with Express and MongoDB.
+This repository contains a full-stack finance dashboard system:
 
-## Architecture
+- `backend` for the Express + MongoDB API
+- `frontend` for the React application
 
-The backend is organized by feature inside [`backend/src`](/Users/bbox/Finance%20Backend/finance-dashboard/backend/src):
+## Project Structure
+
+### Backend
+
+The backend uses a feature-based modular structure inside [`backend/src`](/Users/bbox/Finance%20Backend/finance-dashboard/backend/src):
 
 - `modules/auth`
 - `modules/users`
@@ -15,82 +20,135 @@ The backend is organized by feature inside [`backend/src`](/Users/bbox/Finance%2
 - `utils`
 - `app.js`
 
-Each module follows the same structure:
+Each backend module follows:
 
-- `*.model.js` for MongoDB schema definitions
-- `*.service.js` for business logic
-- `*.controller.js` for request/response handling
-- `*.routes.js` for route registration
+- `*.model.js`
+- `*.service.js`
+- `*.controller.js`
+- `*.routes.js`
 
-## Modules
+### Frontend
+
+The frontend uses a feature-based React structure inside [`frontend/src`](/Users/bbox/Finance%20Backend/finance-dashboard/frontend/src):
+
+- `modules/auth`
+- `modules/dashboard`
+- `modules/records`
+- `modules/users`
+- `components`
+- `services`
+- `hooks`
+- `utils`
+- `layouts`
+- `App.jsx`
+
+Each frontend module contains focused pages, components, and hooks where needed.
+
+## Frontend Setup
+
+Run the frontend:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Optional environment variable:
+
+```bash
+VITE_API_BASE_URL=http://localhost:8008/api
+```
+
+If `VITE_API_BASE_URL` is not set, the frontend defaults to:
+
+```bash
+http://localhost:8008/api
+```
+
+## Backend Setup
+
+Run the backend:
+
+```bash
+cd backend
+npm install
+npm start
+```
+
+Required backend environment variables in [`backend/.env`](/Users/bbox/Finance%20Backend/finance-dashboard/backend/.env):
+
+```env
+PORT=8008
+MONGODB_URI=your_mongodb_uri
+JWT_SECRET=your_secret_key
+```
+
+## Frontend Features
+
+Current frontend features:
+
+- authentication with login and register pages
+- JWT persistence with `localStorage`
+- protected routes for authenticated users
+- role-based route access for admin users
+- sidebar layout with topbar user info
+- records CRUD UI
+- dashboard analytics UI
+- admin-only users management UI
+- loading, error, and empty states
+
+## API Usage
+
+All frontend API requests go through the centralized fetch wrapper in [`frontend/src/services/api.js`](/Users/bbox/Finance%20Backend/finance-dashboard/frontend/src/services/api.js).
+
+It handles:
+
+- API base URL
+- JSON headers
+- automatic JWT attachment
+- JSON parsing
+- global non-2xx error handling
+- unauthorized-session handling
+
+Additional feature services:
+
+- [`frontend/src/services/dashboard.js`](/Users/bbox/Finance%20Backend/finance-dashboard/frontend/src/services/dashboard.js)
+- [`frontend/src/services/records.js`](/Users/bbox/Finance%20Backend/finance-dashboard/frontend/src/services/records.js)
+- [`frontend/src/services/users.js`](/Users/bbox/Finance%20Backend/finance-dashboard/frontend/src/services/users.js)
+
+## Backend Features
 
 ### Auth
 
-Handles:
-
-- user registration
+- register
 - login
+- JWT authentication
 - password hashing with `bcrypt`
-- JWT generation
-- current user lookup with token auth
+- current user lookup
 
 ### Users
 
-Handles:
-
-- admin-only user creation
 - admin-only user listing
-- admin-only role and status updates
+- admin-only role updates
+- admin-only activate/deactivate control
 
 ### Records
 
-Handles:
-
-- record creation
-- record listing
-- filtering by `type`, `category`, and `date`
+- create record
+- list records
+- filter by `type`, `category`, and `date`
 - pagination with `page` and `limit`
-- record update
-- record delete
+- update record
+- delete record
 
 ### Dashboard
 
-Handles analytics using MongoDB aggregation:
-
-- summary totals
+- total income
+- total expense
+- net balance
 - category aggregation
 - monthly trends
-
-## Middleware
-
-### `verifyToken`
-
-- validates JWT
-- loads the current user
-- attaches the user to `req.user`
-
-### `authorizeRoles(...roles)`
-
-- restricts access by user role
-- returns `403` for unauthorized roles
-
-## Role System
-
-Supported roles:
-
-- `viewer`
-- `analyst`
-- `admin`
-
-Supported statuses:
-
-- `active`
-- `inactive`
-
-Admin-only routes use both:
-
-- `verifyToken`
-- `authorizeRoles("admin")`
 
 ## API Endpoints
 
@@ -127,10 +185,29 @@ Query params for `GET /api/records`:
 - `GET /api/dashboard/categories`
 - `GET /api/dashboard/trends`
 
-### System
+## Role System
 
-- `GET /`
-- `GET /api/health`
+Supported roles:
+
+- `viewer`
+- `analyst`
+- `admin`
+
+Supported statuses:
+
+- `active`
+- `inactive`
+
+Frontend route access:
+
+- `/dashboard` for authenticated users
+- `/records` for authenticated users
+- `/users` for admin users only
+
+Backend admin routes use:
+
+- `verifyToken`
+- `authorizeRoles("admin")`
 
 ## Response Format
 

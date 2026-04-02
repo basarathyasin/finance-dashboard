@@ -1,7 +1,7 @@
+const createError = require("../utils/create-error");
+
 function notFound(req, _res, next) {
-  const error = new Error(`Route not found: ${req.method} ${req.originalUrl}`);
-  error.statusCode = 404;
-  next(error);
+  next(createError(`Route not found: ${req.method} ${req.originalUrl}`, 404));
 }
 
 module.exports = notFound;

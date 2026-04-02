@@ -1,40 +1,70 @@
 const recordsService = require("./records.service");
 const asyncHandler = require("../../utils/async-handler");
 const createError = require("../../utils/create-error");
+const sendResponse = require("../../utils/send-response");
+const {
+  requireFields,
+  validateEnum,
+  validateObjectId,
+  validateNumber,
+  validateDate,
+} = require("../../utils/validation");
 
 function validateCreateRecordBody(body) {
-  const { amount, type, category, date } = body;
+  requireFields(body, ["amount", "type", "category", "date"]);
+  validateNumber(body.amount, "amount");
+  validateEnum(body.type, ["income", "expense"], "type");
+  validateDate(body.date, "date");
+}
 
+function validateUpdateRecordBody(body) {
   if (
-    amount === undefined ||
-    !type ||
-    !category ||
-    !date
+    body.amount === undefined &&
+    body.type === undefined &&
+    body.category === undefined &&
+    body.date === undefined &&
+    body.note === undefined
   ) {
-    throw createError("amount, type, category and date are required", 400);
+    throw createError(
+      "amount, type, category, date or note is required to update the record",
+      400
+    );
   }
+
+  validateNumber(body.amount, "amount");
+  validateEnum(body.type, ["income", "expense"], "type");
+  validateDate(body.date, "date");
 }
 
 module.exports = {
   createRecord: asyncHandler(async function createRecord(req, res) {
     validateCreateRecordBody(req.body);
     const data = await recordsService.createRecord(req.body, req.user._id);
-    res.status(201).json(data);
+    sendResponse(res, 201, data.message, {
+      record: data.record,
+    });
   }),
   getRecords: asyncHandler(async function getRecords(req, res) {
+    validateEnum(req.query.type, ["income", "expense"], "type");
+    validateDate(req.query.date, "date");
     const data = await recordsService.getRecords(req.query, req.user._id);
-    res.json(data);
+    sendResponse(res, 200, "Records fetched successfully", data);
   }),
   updateRecord: asyncHandler(async function updateRecord(req, res) {
+    validateObjectId(req.params.id, "record id");
+    validateUpdateRecordBody(req.body);
     const data = await recordsService.updateRecord(
       req.params.id,
       req.body,
       req.user._id
     );
-    res.json(data);
+    sendResponse(res, 200, data.message, {
+      record: data.record,
+    });
   }),
   deleteRecord: asyncHandler(async function deleteRecord(req, res) {
+    validateObjectId(req.params.id, "record id");
     const data = await recordsService.deleteRecord(req.params.id, req.user._id);
-    res.json(data);
+    sendResponse(res, 200, data.message);
   }),
 };

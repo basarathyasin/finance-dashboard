@@ -1,36 +1,37 @@
 const authService = require("./auth.service");
 const asyncHandler = require("../../utils/async-handler");
-const createError = require("../../utils/create-error");
+const sendResponse = require("../../utils/send-response");
+const { requireFields, validateEnum } = require("../../utils/validation");
 
 function validateRegisterBody(body) {
-  const { name, email, password } = body;
-
-  if (!name || !email || !password) {
-    throw createError("name, email and password are required", 400);
-  }
+  requireFields(body, ["name", "email", "password"]);
+  validateEnum(body.role, ["viewer", "analyst", "admin"], "role");
+  validateEnum(body.status, ["active", "inactive"], "status");
 }
 
 function validateLoginBody(body) {
-  const { email, password } = body;
-
-  if (!email || !password) {
-    throw createError("email and password are required", 400);
-  }
+  requireFields(body, ["email", "password"]);
 }
 
 module.exports = {
   registerUser: asyncHandler(async function registerUser(req, res) {
     validateRegisterBody(req.body);
     const data = await authService.registerUser(req.body);
-    res.status(201).json(data);
+    sendResponse(res, 201, data.message, {
+      token: data.token,
+      user: data.user,
+    });
   }),
   loginUser: asyncHandler(async function loginUser(req, res) {
     validateLoginBody(req.body);
     const data = await authService.loginUser(req.body);
-    res.json(data);
+    sendResponse(res, 200, data.message, {
+      token: data.token,
+      user: data.user,
+    });
   }),
   getCurrentUser: asyncHandler(async function getCurrentUser(req, res) {
     const data = await authService.getCurrentUser(req.user);
-    res.json(data);
+    sendResponse(res, 200, "Current user fetched successfully", data);
   }),
 };

@@ -1,4 +1,6 @@
 import { useEffect } from "react";
+import ErrorState from "../../../components/ErrorState";
+import LoadingState from "../../../components/LoadingState";
 import { useAuth } from "../../auth/hooks/useAuth";
 import CategoryBreakdown from "../components/CategoryBreakdown";
 import SummaryCards from "../components/SummaryCards";
@@ -25,12 +27,9 @@ function DashboardPage() {
         </p>
       </article>
 
-      {isLoading ? <div className="empty-state-card">Loading dashboard...</div> : null}
+      {isLoading ? <LoadingState message="Loading dashboard..." /> : null}
       {!isLoading && error ? (
-        <div className="empty-state-card">
-          <h3>Could not load dashboard</h3>
-          <p>{error}</p>
-        </div>
+        <ErrorState message={error} title="Could not load dashboard" />
       ) : null}
 
       {!isLoading && !error ? (

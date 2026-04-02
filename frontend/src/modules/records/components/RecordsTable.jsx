@@ -1,3 +1,5 @@
+import EmptyState from "../../../components/EmptyState";
+
 function formatCurrency(amount) {
   return new Intl.NumberFormat("en-IN", {
     style: "currency",
@@ -17,10 +19,10 @@ function formatDate(value) {
 function RecordsTable({ records, onEdit, onDelete, deletingId }) {
   if (records.length === 0) {
     return (
-      <div className="empty-state-card">
-        <h3>No records found</h3>
-        <p>Create a record or adjust your filters to see matching transactions.</p>
-      </div>
+      <EmptyState
+        message="Create a record or adjust your filters to see matching transactions."
+        title="No records found"
+      />
     );
   }
 

@@ -1,4 +1,5 @@
 import { Navigate, useLocation } from "react-router-dom";
+import LoadingState from "./LoadingState";
 import { useAuth } from "../modules/auth/hooks/useAuth";
 
 function ProtectedRoute({ children, allowedRoles }) {
@@ -6,7 +7,7 @@ function ProtectedRoute({ children, allowedRoles }) {
   const location = useLocation();
 
   if (isBootstrapping) {
-    return <div className="screen-state">Checking your session...</div>;
+    return <LoadingState message="Checking your session..." />;
   }
 
   if (!isAuthenticated) {

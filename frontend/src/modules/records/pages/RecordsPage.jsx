@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
+import ErrorState from "../../../components/ErrorState";
+import LoadingState from "../../../components/LoadingState";
 import RecordForm from "../components/RecordForm";
 import RecordsFilterBar from "../components/RecordsFilterBar";
 import RecordsTable from "../components/RecordsTable";
@@ -143,12 +145,9 @@ function RecordsPage() {
         />
 
         <div className="records-content">
-          {isLoading ? <div className="empty-state-card">Loading records...</div> : null}
+          {isLoading ? <LoadingState message="Loading records..." /> : null}
           {!isLoading && error ? (
-            <div className="empty-state-card">
-              <h3>Could not load records</h3>
-              <p>{error}</p>
-            </div>
+            <ErrorState message={error} title="Could not load records" />
           ) : null}
           {!isLoading && !error ? (
             <RecordsTable

@@ -1,10 +1,12 @@
+import EmptyState from "../../../components/EmptyState";
+
 function UsersTable({ users, onRoleChange, onStatusToggle, updatingKey }) {
   if (users.length === 0) {
     return (
-      <div className="empty-state-card">
-        <h3>No users found</h3>
-        <p>User accounts will appear here once they are created.</p>
-      </div>
+      <EmptyState
+        message="User accounts will appear here once they are created."
+        title="No users found"
+      />
     );
   }
 

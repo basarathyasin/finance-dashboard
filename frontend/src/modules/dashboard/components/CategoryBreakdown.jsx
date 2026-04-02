@@ -1,3 +1,5 @@
+import EmptyState from "../../../components/EmptyState";
+
 function formatCurrency(amount) {
   return new Intl.NumberFormat("en-IN", {
     style: "currency",
@@ -15,7 +17,10 @@ function CategoryBreakdown({ categories }) {
       </div>
 
       {categories.length === 0 ? (
-        <p className="empty-copy">No category data available yet.</p>
+        <EmptyState
+          message="Add some records to see category totals here."
+          title="No category data available"
+        />
       ) : (
         <div className="table-wrapper">
           <table className="records-table">

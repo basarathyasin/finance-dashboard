@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import ErrorState from "../../../components/ErrorState";
+import LoadingState from "../../../components/LoadingState";
 import UsersTable from "../components/UsersTable";
 import { useUsers } from "../hooks/useUsers";
 
@@ -54,20 +56,14 @@ function UsersPage() {
         </p>
       </article>
 
-      {isLoading ? <div className="empty-state-card">Loading users...</div> : null}
+      {isLoading ? <LoadingState message="Loading users..." /> : null}
       {!isLoading && error ? (
-        <div className="empty-state-card">
-          <h3>Could not load users</h3>
-          <p>{error}</p>
-        </div>
+        <ErrorState message={error} title="Could not load users" />
       ) : null}
       {!isLoading && !error ? (
         <>
           {actionError ? (
-            <div className="empty-state-card">
-              <h3>Update failed</h3>
-              <p>{actionError}</p>
-            </div>
+            <ErrorState message={actionError} title="Update failed" />
           ) : null}
 
           <UsersTable

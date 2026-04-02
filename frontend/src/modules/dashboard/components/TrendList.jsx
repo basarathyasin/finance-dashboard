@@ -1,3 +1,5 @@
+import EmptyState from "../../../components/EmptyState";
+
 function formatCurrency(amount) {
   return new Intl.NumberFormat("en-IN", {
     style: "currency",
@@ -15,7 +17,10 @@ function TrendList({ trends }) {
       </div>
 
       {trends.length === 0 ? (
-        <p className="empty-copy">No trends available yet.</p>
+        <EmptyState
+          message="Add records across dates to unlock monthly trends."
+          title="No trends available"
+        />
       ) : (
         <div className="trend-list">
           {trends.map((trend) => (

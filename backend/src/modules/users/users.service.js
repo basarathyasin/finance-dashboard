@@ -62,6 +62,7 @@ async function updateUser(userId, updateData, currentUser) {
     throw createError("role or status is required to update the user", 400);
   }
 
+  // Prevent the current admin from locking themselves out of the system.
   if (currentUser && userId === currentUser._id.toString()) {
     if (updates.role && updates.role !== currentUser.role) {
       throw createError("You cannot change your own role", 400);

@@ -50,6 +50,8 @@ function RecordsPage() {
     () => (editingRecord ? "Edit record" : "Add new record"),
     [editingRecord]
   );
+  // The backend only allows admins to create or modify records,
+  // so the UI stays honest and hides those actions for other roles.
   const canManageRecords = user?.role === "admin";
 
   function handleFilterChange(event) {

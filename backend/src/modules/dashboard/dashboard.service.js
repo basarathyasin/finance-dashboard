@@ -22,6 +22,8 @@ async function getHealthStatus() {
 }
 
 async function getSummary(userId) {
+  // One aggregation is enough here, so we calculate income and expense together
+  // and derive net balance in code to keep the pipeline easy to read.
   const [result] = await Record.aggregate([
     {
       $match: getUserMatch(userId),
@@ -117,6 +119,8 @@ async function getTrends(userId) {
   const groupedTrends = {};
 
   trends.forEach((item) => {
+    // Mongo groups income and expense separately, so we reshape them into
+    // one month object for the dashboard card.
     const month = `${item._id.year}-${String(item._id.month).padStart(2, "0")}`;
 
     if (!groupedTrends[month]) {

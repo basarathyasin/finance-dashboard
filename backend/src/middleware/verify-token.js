@@ -20,6 +20,7 @@ async function verifyToken(req, _res, next) {
       return next(createError("User not found", 401));
     }
 
+    // A valid token should not keep working for users who were later deactivated.
     if (user.status !== "active") {
       return next(createError("User account is inactive", 403));
     }

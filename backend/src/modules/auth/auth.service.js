@@ -24,6 +24,8 @@ async function registerUser(userData) {
   const { name, email, password } = userData;
   const userCount = await User.countDocuments();
 
+  // This keeps registration simple for the assessment flow:
+  // the first person creates the workspace, everyone else is invited by admin.
   if (userCount > 0) {
     throw createError(
       "Public registration is closed. Ask an admin to create your account.",

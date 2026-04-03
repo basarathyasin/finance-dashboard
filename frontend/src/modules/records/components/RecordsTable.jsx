@@ -16,7 +16,7 @@ function formatDate(value) {
   });
 }
 
-function RecordsTable({ records, onEdit, onDelete, deletingId }) {
+function RecordsTable({ records, onEdit, onDelete, deletingId, canManageRecords }) {
   if (records.length === 0) {
     return (
       <EmptyState
@@ -30,7 +30,7 @@ function RecordsTable({ records, onEdit, onDelete, deletingId }) {
     <div className="table-card">
       <div className="table-header">
         <h3>Records</h3>
-        <p>{records.length} transaction(s) loaded</p>
+        <p>{records.length} transaction(s) currently visible</p>
       </div>
 
       <div className="table-wrapper">
@@ -42,7 +42,7 @@ function RecordsTable({ records, onEdit, onDelete, deletingId }) {
               <th>Amount</th>
               <th>Date</th>
               <th>Note</th>
-              <th>Actions</th>
+              {canManageRecords ? <th>Actions</th> : null}
             </tr>
           </thead>
           <tbody>
@@ -57,21 +57,23 @@ function RecordsTable({ records, onEdit, onDelete, deletingId }) {
                 <td>{formatCurrency(record.amount)}</td>
                 <td>{formatDate(record.date)}</td>
                 <td>{record.note || "-"}</td>
-                <td>
-                  <div className="table-actions">
-                    <button className="ghost-button" onClick={() => onEdit(record)} type="button">
-                      Edit
-                    </button>
-                    <button
-                      className="danger-button"
-                      disabled={deletingId === record.id}
-                      onClick={() => onDelete(record)}
-                      type="button"
-                    >
-                      {deletingId === record.id ? "Deleting..." : "Delete"}
-                    </button>
-                  </div>
-                </td>
+                {canManageRecords ? (
+                  <td>
+                    <div className="table-actions">
+                      <button className="ghost-button" onClick={() => onEdit(record)} type="button">
+                        Edit
+                      </button>
+                      <button
+                        className="danger-button"
+                        disabled={deletingId === record.id}
+                        onClick={() => onDelete(record)}
+                        type="button"
+                      >
+                        {deletingId === record.id ? "Deleting..." : "Delete"}
+                      </button>
+                    </div>
+                  </td>
+                ) : null}
               </tr>
             ))}
           </tbody>

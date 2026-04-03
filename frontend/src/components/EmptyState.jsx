@@ -1,6 +1,6 @@
 function EmptyState({ title, message }) {
   return (
-    <div className="empty-state-card">
+    <div className="state-card state-card-empty">
       <h3>{title}</h3>
       <p>{message}</p>
     </div>

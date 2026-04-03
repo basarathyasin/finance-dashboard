@@ -20,6 +20,12 @@ export function useUsers() {
     }
   }, []);
 
+  async function createUser(payload) {
+    const response = await usersService.createUser(payload);
+    await loadUsers();
+    return response;
+  }
+
   async function updateUser(userId, payload) {
     const response = await usersService.updateUser(userId, payload);
     await loadUsers();
@@ -31,6 +37,7 @@ export function useUsers() {
     isLoading,
     error,
     loadUsers,
+    createUser,
     updateUser,
   };
 }

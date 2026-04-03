@@ -8,12 +8,22 @@ function formatCurrency(amount) {
   }).format(amount);
 }
 
+function formatMonth(value) {
+  const [year, month] = value.split("-");
+  const date = new Date(Number(year), Number(month) - 1, 1);
+
+  return date.toLocaleDateString("en-IN", {
+    month: "short",
+    year: "numeric",
+  });
+}
+
 function TrendList({ trends }) {
   return (
     <article className="table-card">
       <div className="table-header">
         <h3>Monthly trends</h3>
-        <p>Income, expense, and net balance over time.</p>
+        <p>Income, expense, and balance by month.</p>
       </div>
 
       {trends.length === 0 ? (
@@ -25,14 +35,29 @@ function TrendList({ trends }) {
         <div className="trend-list">
           {trends.map((trend) => (
             <div className="trend-card" key={trend.month}>
-              <div>
+              <div className="trend-card-main">
                 <span className="stat-label">Month</span>
-                <strong>{trend.month}</strong>
+                <strong>{formatMonth(trend.month)}</strong>
               </div>
               <div className="trend-metrics">
-                <span>Income: {formatCurrency(trend.income)}</span>
-                <span>Expense: {formatCurrency(trend.expense)}</span>
-                <span>Net: {formatCurrency(trend.netBalance)}</span>
+                <div className="trend-metric trend-metric-income">
+                  <small>Income</small>
+                  <strong>{formatCurrency(trend.income)}</strong>
+                </div>
+                <div className="trend-metric trend-metric-expense">
+                  <small>Expense</small>
+                  <strong>{formatCurrency(trend.expense)}</strong>
+                </div>
+                <div
+                  className={
+                    trend.netBalance >= 0
+                      ? "trend-metric trend-metric-balance-positive"
+                      : "trend-metric trend-metric-balance-negative"
+                  }
+                >
+                  <small>Net</small>
+                  <strong>{formatCurrency(trend.netBalance)}</strong>
+                </div>
               </div>
             </div>
           ))}

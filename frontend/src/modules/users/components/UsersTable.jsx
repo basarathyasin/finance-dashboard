@@ -1,6 +1,12 @@
 import EmptyState from "../../../components/EmptyState";
 
-function UsersTable({ users, onRoleChange, onStatusToggle, updatingKey }) {
+function UsersTable({
+  users,
+  currentUserId,
+  onRoleChange,
+  onStatusToggle,
+  updatingKey,
+}) {
   if (users.length === 0) {
     return (
       <EmptyState
@@ -14,7 +20,7 @@ function UsersTable({ users, onRoleChange, onStatusToggle, updatingKey }) {
     <div className="table-card">
       <div className="table-header">
         <h3>Users management</h3>
-        <p>Manage roles and activation state for all users.</p>
+        <p>Update roles and status.</p>
       </div>
 
       <div className="table-wrapper">
@@ -32,6 +38,7 @@ function UsersTable({ users, onRoleChange, onStatusToggle, updatingKey }) {
             {users.map((user) => {
               const roleKey = `${user.id}-role`;
               const statusKey = `${user.id}-status`;
+              const isCurrentUser = user.id === currentUserId;
 
               return (
                 <tr key={user.id}>
@@ -56,13 +63,16 @@ function UsersTable({ users, onRoleChange, onStatusToggle, updatingKey }) {
                       <select
                         className="inline-select"
                         defaultValue={user.role}
-                        disabled={updatingKey === roleKey}
+                        disabled={updatingKey === roleKey || isCurrentUser}
                         onChange={(event) => onRoleChange(user, event.target.value)}
                       >
                         <option value="viewer">viewer</option>
                         <option value="analyst">analyst</option>
                         <option value="admin">admin</option>
                       </select>
+                      {isCurrentUser ? (
+                        <span className="table-hint">You cannot change your own role</span>
+                      ) : null}
                       <button
                         className="ghost-button"
                         disabled={updatingKey === statusKey}

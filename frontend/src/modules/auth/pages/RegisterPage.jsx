@@ -71,7 +71,7 @@ function RegisterPage() {
       onChange={handleChange}
       onSubmit={handleSubmit}
       submitLabel="Create account"
-      subtitle="Register and continue straight into the dashboard."
+      subtitle="Create the first admin account for this workspace."
       title="Register"
     />
   );

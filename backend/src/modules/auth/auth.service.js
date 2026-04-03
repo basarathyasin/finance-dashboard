@@ -21,7 +21,15 @@ function createToken(userId) {
 }
 
 async function registerUser(userData) {
-  const { name, email, password, role, status } = userData;
+  const { name, email, password } = userData;
+  const userCount = await User.countDocuments();
+
+  if (userCount > 0) {
+    throw createError(
+      "Public registration is closed. Ask an admin to create your account.",
+      403
+    );
+  }
 
   const existingUser = await User.findOne({ email });
 
@@ -35,8 +43,8 @@ async function registerUser(userData) {
     name,
     email,
     password: hashedPassword,
-    role: role || "viewer",
-    status: status || "active",
+    role: "admin",
+    status: "active",
   });
 
   return {

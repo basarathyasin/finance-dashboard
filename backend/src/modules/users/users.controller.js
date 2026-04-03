@@ -38,7 +38,7 @@ module.exports = {
   updateUser: asyncHandler(async function updateUser(req, res) {
     validateObjectId(req.params.id, "user id");
     validateUpdateUserBody(req.body);
-    const data = await usersService.updateUser(req.params.id, req.body);
+    const data = await usersService.updateUser(req.params.id, req.body, req.user);
     sendResponse(res, 200, data.message, {
       user: data.user,
     });

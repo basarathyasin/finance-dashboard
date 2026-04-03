@@ -12,7 +12,7 @@ function RecordForm({
     <div className="records-form-card">
       <div className="records-form-head">
         <h3>{title}</h3>
-        <p>Capture amount, type, category, date, and notes in one place.</p>
+        <p>Add transaction details.</p>
       </div>
 
       <form className="records-form" onSubmit={onSubmit}>

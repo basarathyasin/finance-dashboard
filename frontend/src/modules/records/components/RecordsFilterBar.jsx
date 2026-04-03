@@ -1,6 +1,11 @@
 function RecordsFilterBar({ filters, onChange, onSubmit, onReset }) {
   return (
     <form className="toolbar-card records-filter-bar" onSubmit={onSubmit}>
+      <div className="toolbar-copy">
+        <p className="section-kicker">Quick filters</p>
+        <h3>Filter records</h3>
+      </div>
+
       <label className="form-field compact-field">
         <span>Type</span>
         <select name="type" onChange={onChange} value={filters.type}>
@@ -28,7 +33,7 @@ function RecordsFilterBar({ filters, onChange, onSubmit, onReset }) {
 
       <div className="filter-actions">
         <button className="primary-button" type="submit">
-          Apply filters
+          Apply
         </button>
         <button className="ghost-button" onClick={onReset} type="button">
           Reset

@@ -47,7 +47,7 @@ async function getUsers() {
   };
 }
 
-async function updateUser(userId, updateData) {
+async function updateUser(userId, updateData, currentUser) {
   const updates = {};
 
   if (updateData.role) {
@@ -60,6 +60,16 @@ async function updateUser(userId, updateData) {
 
   if (Object.keys(updates).length === 0) {
     throw createError("role or status is required to update the user", 400);
+  }
+
+  if (currentUser && userId === currentUser._id.toString()) {
+    if (updates.role && updates.role !== currentUser.role) {
+      throw createError("You cannot change your own role", 400);
+    }
+
+    if (updates.status && updates.status !== "active") {
+      throw createError("You cannot deactivate your own account", 400);
+    }
   }
 
   const user = await User.findByIdAndUpdate(userId, updates, {

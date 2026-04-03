@@ -7,22 +7,32 @@ function formatCurrency(amount) {
 }
 
 function SummaryCards({ summary }) {
+  const cards = [
+    {
+      label: "Total income",
+      value: formatCurrency(summary.totalIncome),
+      tone: "income",
+    },
+    {
+      label: "Total expense",
+      value: formatCurrency(summary.totalExpense),
+      tone: "expense",
+    },
+    {
+      label: "Net balance",
+      value: formatCurrency(summary.netBalance),
+      tone: summary.netBalance >= 0 ? "balance-positive" : "balance-negative",
+    },
+  ];
+
   return (
     <div className="summary-grid">
-      <article className="stat-card">
-        <span className="stat-label">Total income</span>
-        <strong>{formatCurrency(summary.totalIncome)}</strong>
-      </article>
-
-      <article className="stat-card">
-        <span className="stat-label">Total expense</span>
-        <strong>{formatCurrency(summary.totalExpense)}</strong>
-      </article>
-
-      <article className="stat-card">
-        <span className="stat-label">Net balance</span>
-        <strong>{formatCurrency(summary.netBalance)}</strong>
-      </article>
+      {cards.map((card) => (
+        <article className={`stat-card stat-card-${card.tone}`} key={card.label}>
+          <span className="stat-label">{card.label}</span>
+          <strong>{card.value}</strong>
+        </article>
+      ))}
     </div>
   );
 }

@@ -13,7 +13,7 @@ function CategoryBreakdown({ categories }) {
     <article className="table-card">
       <div className="table-header">
         <h3>Category breakdown</h3>
-        <p>Income and expense totals grouped by category.</p>
+        <p>See where cash is coming from and where it is going.</p>
       </div>
 
       {categories.length === 0 ? (

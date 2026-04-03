@@ -1,70 +1,32 @@
 # Finance Dashboard System
 
-This repository contains a full-stack finance dashboard system:
+This project is a finance dashboard with:
 
-- `backend` for the Express + MongoDB API
-- `frontend` for the React application
+- a modular Express + MongoDB backend in [`backend`](/Users/bbox/Finance%20Backend/finance-dashboard/backend)
+- a React frontend in [`frontend`](/Users/bbox/Finance%20Backend/finance-dashboard/frontend)
 
-## Project Structure
+The main goal of the backend is to show clean structure, role-based access control, records management, and summary analytics for a dashboard use case.
 
-### Backend
+## Backend Architecture
 
-The backend uses a feature-based modular structure inside [`backend/src`](/Users/bbox/Finance%20Backend/finance-dashboard/backend/src):
+Backend source lives in [`backend/src`](/Users/bbox/Finance%20Backend/finance-dashboard/backend/src) and follows a feature-based modular structure:
 
-- `modules/auth`
-- `modules/users`
-- `modules/records`
-- `modules/dashboard`
-- `middleware`
-- `config`
-- `utils`
-- `app.js`
+- [`backend/src/modules/auth`](/Users/bbox/Finance%20Backend/finance-dashboard/backend/src/modules/auth)
+- [`backend/src/modules/users`](/Users/bbox/Finance%20Backend/finance-dashboard/backend/src/modules/users)
+- [`backend/src/modules/records`](/Users/bbox/Finance%20Backend/finance-dashboard/backend/src/modules/records)
+- [`backend/src/modules/dashboard`](/Users/bbox/Finance%20Backend/finance-dashboard/backend/src/modules/dashboard)
+- [`backend/src/middleware`](/Users/bbox/Finance%20Backend/finance-dashboard/backend/src/middleware)
+- [`backend/src/config`](/Users/bbox/Finance%20Backend/finance-dashboard/backend/src/config)
+- [`backend/src/utils`](/Users/bbox/Finance%20Backend/finance-dashboard/backend/src/utils)
 
-Each backend module follows:
+Each module is split into:
 
-- `*.model.js`
-- `*.service.js`
-- `*.controller.js`
-- `*.routes.js`
+- `*.model.js` for schema definition
+- `*.service.js` for business logic and database work
+- `*.controller.js` for request/response handling
+- `*.routes.js` for route definitions
 
-### Frontend
-
-The frontend uses a feature-based React structure inside [`frontend/src`](/Users/bbox/Finance%20Backend/finance-dashboard/frontend/src):
-
-- `modules/auth`
-- `modules/dashboard`
-- `modules/records`
-- `modules/users`
-- `components`
-- `services`
-- `hooks`
-- `utils`
-- `layouts`
-- `App.jsx`
-
-Each frontend module contains focused pages, components, and hooks where needed.
-
-## Frontend Setup
-
-Run the frontend:
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Optional environment variable:
-
-```bash
-VITE_API_BASE_URL=http://localhost:8008/api
-```
-
-If `VITE_API_BASE_URL` is not set, the frontend defaults to:
-
-```bash
-http://localhost:8008/api
-```
+This separation keeps route handlers small and makes the business rules easier to follow.
 
 ## Backend Setup
 
@@ -76,93 +38,58 @@ npm install
 npm start
 ```
 
-Required backend environment variables in [`backend/.env`](/Users/bbox/Finance%20Backend/finance-dashboard/backend/.env):
+Required environment variables in [`backend/.env`](/Users/bbox/Finance%20Backend/finance-dashboard/backend/.env):
 
 ```env
 PORT=8008
 MONGODB_URI=your_mongodb_uri
 JWT_SECRET=your_secret_key
+JWT_EXPIRES_IN=7d
 ```
 
-## Frontend Features
+## Frontend Setup
 
-Current frontend features:
+Run the frontend:
 
-- authentication with login and register pages
-- JWT persistence with `localStorage`
-- protected routes for authenticated users
-- role-based route access for admin users
-- sidebar layout with topbar user info
-- records CRUD UI
-- dashboard analytics UI
-- admin-only users management UI
-- loading, error, and empty states
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-## API Usage
+Optional frontend environment variable:
 
-All frontend API requests go through the centralized fetch wrapper in [`frontend/src/services/api.js`](/Users/bbox/Finance%20Backend/finance-dashboard/frontend/src/services/api.js).
+```env
+VITE_API_BASE_URL=http://localhost:8008/api
+```
 
-It handles:
+## Core Backend Features
 
-- API base URL
-- JSON headers
-- automatic JWT attachment
-- JSON parsing
-- global non-2xx error handling
-- unauthorized-session handling
-
-Additional feature services:
-
-- [`frontend/src/services/dashboard.js`](/Users/bbox/Finance%20Backend/finance-dashboard/frontend/src/services/dashboard.js)
-- [`frontend/src/services/records.js`](/Users/bbox/Finance%20Backend/finance-dashboard/frontend/src/services/records.js)
-- [`frontend/src/services/users.js`](/Users/bbox/Finance%20Backend/finance-dashboard/frontend/src/services/users.js)
-
-## Backend Features
-
-### Auth
-
-- register
-- login
-- JWT authentication
-- password hashing with `bcrypt`
-- current user lookup
-
-### Users
-
-- admin-only user listing
-- admin-only role updates
-- admin-only activate/deactivate control
-
-### Records
-
-- create record
-- list records
-- filter by `type`, `category`, and `date`
-- pagination with `page` and `limit`
-- update record
-- delete record
-
-### Dashboard
-
-- total income
-- total expense
-- net balance
-- category aggregation
-- monthly trends
-
-## API Endpoints
-
-### Auth
+### Authentication
 
 - `POST /api/auth/register`
 - `POST /api/auth/login`
 - `GET /api/auth/me`
 
-### Users
+Features:
+
+- password hashing with `bcrypt`
+- JWT authentication with `jsonwebtoken`
+- `verifyToken` middleware for protected routes
+- inactive users are blocked from protected routes
+
+### User Management
 
 - `POST /api/users`
 - `GET /api/users`
 - `PATCH /api/users/:id`
+
+Features:
+
+- admin-only user creation
+- admin-only role updates
+- admin-only status updates
+- self-protection rule to prevent an admin from changing their own role or deactivating their own account
 
 ### Records
 
@@ -171,21 +98,32 @@ Additional feature services:
 - `PATCH /api/records/:id`
 - `DELETE /api/records/:id`
 
-Query params for `GET /api/records`:
+Features:
 
-- `type`
-- `category`
-- `date`
-- `page`
-- `limit`
+- record ownership through `createdBy`
+- filters for `type`, `category`, and `date`
+- pagination with `page` and `limit`
+- role-based access:
+  - `analyst` and `admin` can read records
+  - only `admin` can create, update, or delete records
 
-### Dashboard
+### Dashboard Analytics
 
 - `GET /api/dashboard/summary`
 - `GET /api/dashboard/categories`
 - `GET /api/dashboard/trends`
 
-## Role System
+Features:
+
+- total income
+- total expense
+- net balance
+- category aggregation
+- monthly trends
+
+MongoDB aggregation is used with `$match`, `$group`, and `$sum`.
+
+## Role Model
 
 Supported roles:
 
@@ -193,25 +131,38 @@ Supported roles:
 - `analyst`
 - `admin`
 
-Supported statuses:
+Supported status values:
 
 - `active`
 - `inactive`
 
-Frontend route access:
+Current access rules:
 
-- `/dashboard` for authenticated users
-- `/records` for authenticated users
-- `/users` for admin users only
+- `viewer` can access dashboard endpoints only
+- `analyst` can access dashboard endpoints and read records
+- `admin` can access dashboard endpoints, manage records, and manage users
 
-Backend admin routes use:
+## Business Rules And Assumptions
 
-- `verifyToken`
-- `authorizeRoles("admin")`
+- the first public registration creates the initial `admin`
+- after the first user is created, public registration is closed
+- additional users are expected to be created by an admin from the users module
+- records are user-owned through `createdBy`
+- dashboard analytics are scoped to the logged-in user’s records
+- this project is designed for assessment/demo use, not as a production-ready finance system
 
-## Response Format
+## Validation And Error Handling
 
-Successful responses:
+The backend includes:
+
+- required field validation
+- enum validation for `role`, `status`, and record `type`
+- ObjectId validation for update/delete endpoints
+- number and date validation
+- centralized error handling middleware
+- consistent JSON response format
+
+Success response example:
 
 ```json
 {
@@ -221,7 +172,7 @@ Successful responses:
 }
 ```
 
-Error responses:
+Error response example:
 
 ```json
 {
@@ -229,3 +180,33 @@ Error responses:
   "message": "Route not found"
 }
 ```
+
+## Tradeoffs
+
+This backend intentionally stays simple:
+
+- JWTs are stateless and there is no refresh-token flow
+- records are physically deleted instead of using soft delete
+- validation is handwritten instead of using a schema library like Joi or Zod
+- the analytics layer is simple and built directly on MongoDB aggregation
+- the project favors readability and clear structure over production-grade completeness
+
+These tradeoffs were chosen to keep the code understandable for an intern-level backend assignment while still demonstrating practical backend design.
+
+## Frontend Notes
+
+The frontend uses:
+
+- React
+- React Router
+- Context API for auth state
+- a centralized Fetch API wrapper in [`frontend/src/services/api.js`](/Users/bbox/Finance%20Backend/finance-dashboard/frontend/src/services/api.js)
+
+Frontend features include:
+
+- login and first-user registration flow
+- protected routes
+- role-based UI rendering
+- records management UI
+- dashboard analytics UI
+- admin-only user management UI

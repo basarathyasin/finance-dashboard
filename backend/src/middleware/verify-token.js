@@ -20,6 +20,10 @@ async function verifyToken(req, _res, next) {
       return next(createError("User not found", 401));
     }
 
+    if (user.status !== "active") {
+      return next(createError("User account is inactive", 403));
+    }
+
     req.user = user;
     next();
   } catch (error) {

@@ -1,26 +1,35 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "../modules/auth/hooks/useAuth";
 
-const pageTitles = {
-  "/dashboard": "Dashboard",
-  "/records": "Records",
-  "/users": "Users",
+const pageConfig = {
+  "/dashboard": {
+    title: "Dashboard",
+    subtitle: "Overview and analytics",
+  },
+  "/records": {
+    title: "Records",
+    subtitle: "Manage your transactions",
+  },
+  "/users": {
+    title: "Users",
+    subtitle: "Manage access and roles",
+  },
 };
 
 function AppLayout({ children }) {
   const { user, logout } = useAuth();
   const location = useLocation();
-  const pageTitle = pageTitles[location.pathname] || "Finance Dashboard";
+  const currentPage = pageConfig[location.pathname] || {
+    title: "Finance Dashboard",
+    subtitle: "Manage your finance workspace with confidence.",
+  };
 
   return (
     <main className="app-layout">
       <aside className="sidebar">
         <div className="sidebar-brand">
           <p className="section-kicker">Finance Dashboard</p>
-          <h1 className="sidebar-title">Control panel</h1>
-          <p className="sidebar-copy">
-            Simple navigation for analytics, records, and user management.
-          </p>
+          <h1 className="sidebar-title">Workspace</h1>
         </div>
 
         <nav className="sidebar-nav">
@@ -55,6 +64,7 @@ function AppLayout({ children }) {
         <div className="sidebar-footer">
           <span className="sidebar-footer-label">Signed in as</span>
           <strong>{user?.role}</strong>
+          <span className="sidebar-footer-name">{user?.name}</span>
         </div>
       </aside>
 
@@ -62,7 +72,8 @@ function AppLayout({ children }) {
         <header className="topbar">
           <div className="topbar-main">
             <p className="section-kicker">Workspace</p>
-            <h2 className="topbar-title">{pageTitle}</h2>
+            <h2 className="topbar-title">{currentPage.title}</h2>
+            <p className="topbar-copy">{currentPage.subtitle}</p>
           </div>
           <div className="topbar-actions">
             <div className="user-chip">
@@ -75,7 +86,7 @@ function AppLayout({ children }) {
           </div>
         </header>
 
-        {children}
+        <div className="page-body">{children}</div>
       </section>
     </main>
   );

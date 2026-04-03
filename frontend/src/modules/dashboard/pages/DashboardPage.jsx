@@ -18,13 +18,22 @@ function DashboardPage() {
 
   return (
     <section className="dashboard-page">
-      <article className="stat-card stat-card-wide">
-        <p className="section-kicker">Dashboard analytics</p>
-        <h2>Live finance analytics for {user?.name}</h2>
-        <p>
-          This dashboard reads income, expense, category, and trend data directly
-          from the backend analytics endpoints through the shared fetch service.
-        </p>
+      <article className="hero-card">
+        <div>
+          <p className="section-kicker">Dashboard analytics</p>
+          <h2>Welcome back, {user?.name}</h2>
+          <p>Your finance summary at a glance.</p>
+        </div>
+        <div className="hero-metrics">
+          <div className="hero-metric">
+            <span>Role</span>
+            <strong>{user?.role}</strong>
+          </div>
+          <div className="hero-metric">
+            <span>Status</span>
+            <strong>{user?.status}</strong>
+          </div>
+        </div>
       </article>
 
       {isLoading ? <LoadingState message="Loading dashboard..." /> : null}

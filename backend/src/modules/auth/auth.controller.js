@@ -1,12 +1,10 @@
 const authService = require("./auth.service");
 const asyncHandler = require("../../utils/async-handler");
 const sendResponse = require("../../utils/send-response");
-const { requireFields, validateEnum } = require("../../utils/validation");
+const { requireFields } = require("../../utils/validation");
 
 function validateRegisterBody(body) {
   requireFields(body, ["name", "email", "password"]);
-  validateEnum(body.role, ["viewer", "analyst", "admin"], "role");
-  validateEnum(body.status, ["active", "inactive"], "status");
 }
 
 function validateLoginBody(body) {
